@@ -1,1 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
+body {
+  /* Add your background pattern here */
+  background-color: #f8f8f8;
+  background-image: radial-gradient(rgba(12, 12, 12, 0.171) 2px, transparent 0);
+  background-size: 30px 30px;
+  background-position: -5px -5px;
+  overflow:hidden;
+  display: flex;
+  font-family: 'Poppins', sans-serif;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  height: 100vh;
+}

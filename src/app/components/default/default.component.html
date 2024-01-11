@@ -9,8 +9,13 @@
     </div>
 
     <footer class="input-message-box relative flex place-content-center items-center">
-        <img [src]="smiley" alt="smiley-icon" class="h-2/5 absolute left-smiley cursor-pointer">
-        <input type="text" class="w-11/12 h-3/5 pl-14 rounded-3xl shadow" placeholder="type your message here...">
+        <img [src]="smiley" alt="smiley-icon" (click)="toggleEmojiDrawer()" class="h-2/5 absolute left-smiley cursor-pointer">
+
+        @if (showEmojis){
+            <emoji-picker (emoji-click)="getEmoji($event)" class="light absolute bottom-1"></emoji-picker>
+        }
+
+        <input type="text" class="w-11/12 h-3/5 pl-14 rounded-3xl shadow" placeholder="{{inputPlaceholder}}">
         <img [src]="send" alt="send-icon" class="h-2/5 absolute right-send cursor-pointer">
     </footer>
 </div> 

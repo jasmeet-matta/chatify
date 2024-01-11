@@ -1,7 +1,16 @@
-<div class="main-card">
-    <header class="top-bar">
-            <img [src]="chatRoom" alt="chat-room-icon" class="chat-icon h-4/6">
-            <h2 class="topbar-title font-bold text-2xl">Chatify</h2>
-            <img [src]="menu" alt="menu-icon" class="menu-icon h-3/6">
+<div class="main-card flex flex-col rounded-2xl">
+    <header class="top-bar rounded-t-2xl w-full flex flex-row items-center mb-4">
+        <img [src]="chatRoom" alt="chat-room-icon" class="chat-icon h-4/6 ml-6 mr-3">
+        <h2 class="topbar-title font-bold text-2xl">{{title}}</h2>
+        <img [src]="menu" alt="menu-icon" class="menu-icon h-3/6 mr-4 cursor-pointer ml-auto">
     </header>
-</div>
+
+    <div class="flex-grow bg-red-100 w-11/12 mx-auto">
+    </div>
+
+    <footer class="input-message-box relative flex place-content-center items-center">
+        <img [src]="smiley" alt="smiley-icon" class="h-2/5 absolute left-smiley cursor-pointer">
+        <input type="text" class="w-11/12 h-3/5 pl-14 rounded-3xl shadow" placeholder="type your message here...">
+        <img [src]="send" alt="send-icon" class="h-2/5 absolute right-send cursor-pointer">
+    </footer>
+</div> 

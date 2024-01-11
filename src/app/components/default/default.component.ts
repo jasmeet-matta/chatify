@@ -9,8 +9,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DefaultComponent implements OnInit {
 
+  public title:string = 'Chatify';
   public chatRoom:string = '/assets/chat-room.png';
   public menu :string = '/assets/menu.png';
+  public send:string = 'assets/send.png';
+  public smiley:string = 'assets/smiley.png';
 
   constructor(){ }
 

@@ -1,7 +1,7 @@
 <div class="main-card flex flex-col rounded-2xl">
     <header class="top-bar rounded-t-2xl w-full flex flex-row items-center mb-4">
         <img [src]="chatRoom" alt="chat-room-icon" class="chat-icon h-4/6 ml-6 mr-3">
-        <h2 class="topbar-title font-bold text-2xl">{{title}}</h2>
+        <h2 class="topbar-title font-bold text-3xl">{{title}}</h2>
         <img [src]="menu" alt="menu-icon" class="menu-icon h-3/6 mr-4 cursor-pointer ml-auto">
     </header>
 
@@ -9,13 +9,12 @@
     </div>
 
     <footer class="input-message-box relative flex place-content-center items-center">
+        @if (showEmojis){
+            <emoji-picker (emoji-click)="getEmoji($event)" class="light absolute bottom-5 mb-14 left-0 w-6/12 h-64 -ml-40 drawer"></emoji-picker>
+        }        
         <img [src]="smiley" alt="smiley-icon" (click)="toggleEmojiDrawer()" class="h-2/5 absolute left-smiley cursor-pointer">
 
-        @if (showEmojis){
-            <emoji-picker (emoji-click)="getEmoji($event)" class="light absolute bottom-1"></emoji-picker>
-        }
-
-        <input type="text" class="w-11/12 h-3/5 pl-14 rounded-3xl shadow" placeholder="{{inputPlaceholder}}">
+        <input type="text" class="w-11/12 h-3/5 pl-14 rounded-3xl shadow pl-[4.5rem]" [(ngModel)]="inputString" (input)="onInput()" placeholder="{{inputPlaceholder}}" alt="input-box">
         <img [src]="send" alt="send-icon" class="h-2/5 absolute right-send cursor-pointer">
     </footer>
 </div> 

@@ -1,4 +1,4 @@
-import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA, HostListener, } from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA, HostListener, ViewChild, ElementRef} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -13,6 +13,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 })
 export class DefaultComponent implements OnInit {
 
+  @ViewChild('inputbox') input: ElementRef;
+
   public title:string = 'Chatify';
   public inputPlaceholder:string = 'type your message here...'
   public chatRoom:string = '/assets/chat-room.png';
@@ -24,7 +26,12 @@ export class DefaultComponent implements OnInit {
 
   constructor(){ }
 
-  ngOnInit() { }
+  ngOnInit() { 
+  }
+
+  ngAfterViewInit(){
+    this.input.nativeElement.focus();
+  }
 
   @HostListener('document:click', ['$event'])
   documentClick(event: MouseEvent): void {

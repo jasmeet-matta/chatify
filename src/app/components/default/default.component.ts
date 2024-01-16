@@ -1,10 +1,13 @@
 import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA, HostListener, ViewChild, ElementRef} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { ModalComponent } from '../modal/modal.component';
+import { BackdropComponent } from '../backdrop/backdrop.component';
 
 @Component({
   selector: 'app-default',
   standalone: true,
-  imports: [FormsModule,ReactiveFormsModule],
+  imports: [FormsModule,ReactiveFormsModule,CommonModule,ModalComponent,BackdropComponent],
   templateUrl: './default.component.html',
   styleUrl: './default.component.scss',
   schemas: [
@@ -13,8 +16,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 })
 export class DefaultComponent implements OnInit {
 
-  @ViewChild('inputbox') input: ElementRef;
-
   public title:string = 'Chatify';
   public inputPlaceholder:string = 'type your message here...'
   public chatRoom:string = '/assets/chat-room.png';
@@ -22,7 +23,9 @@ export class DefaultComponent implements OnInit {
   public send:string = 'assets/send.png';
   public smiley:string = 'assets/smiley.png';
   public showEmojis:boolean = false;
-  public inputString:any;
+  public inputString:any = '';
+
+  isModalOpen = false;
 
   constructor(){ }
 
@@ -30,7 +33,7 @@ export class DefaultComponent implements OnInit {
   }
 
   ngAfterViewInit(){
-    this.input.nativeElement.focus();
+    // this.input.nativeElement.focus();
   }
 
   @HostListener('document:click', ['$event'])
@@ -55,6 +58,11 @@ export class DefaultComponent implements OnInit {
   getEmoji(event:any){
     console.log(event.detail.unicode);
     this.inputString += event.detail.unicode;
+  }
+  
+  handleModalSubmit(inputText: any) {
+    console.log('Submitted input:', inputText);
+    // You can now use the submitted input as needed in the parent component.
   }
 
 }

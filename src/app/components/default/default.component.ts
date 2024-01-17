@@ -26,13 +26,25 @@ export class DefaultComponent implements OnInit {
   public inputString:any = '';
 
   isModalOpen = false;
+  
+  ws:any
 
-  constructor(){ }
+  constructor(){
+  }
 
   ngOnInit() { 
   }
 
   ngAfterViewInit(){
+    this.ws = new WebSocket('wss://wooden-strengthened-origami.glitch.me/');
+
+    this.ws.onopen = () => {
+      console.log('Connected to the server');
+    };
+
+    this.ws.onclose = () => {
+      console.log('Disconnected from server'); 
+    };
     // this.input.nativeElement.focus();
   }
 
@@ -63,6 +75,15 @@ export class DefaultComponent implements OnInit {
   handleModalSubmit(inputText: any) {
     console.log('Submitted input:', inputText);
     // You can now use the submitted input as needed in the parent component.
+  }
+
+  sendMessage(message) {
+    this.ws.send(message);
+  }
+
+  onSubmit(){
+    this.sendMessage(this.inputString);
+    this.inputString = '';
   }
 
 }

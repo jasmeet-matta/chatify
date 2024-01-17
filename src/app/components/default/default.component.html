@@ -17,7 +17,7 @@
         <img [src]="smiley" alt="smiley-icon" (click)="toggleEmojiDrawer()" class="h-2/5 absolute left-smiley cursor-pointer">
 
         <input type="text" class="w-11/12 h-3/5 pl-14 rounded-3xl shadow pl-[4rem]" [(ngModel)]="inputString" (input)="onInput()" placeholder="{{inputPlaceholder}}" alt="input-box">
-        <img [src]="send" alt="send-icon" class="h-2/5 absolute right-send cursor-pointer">
+        <img [src]="send" (click)="onSubmit()" alt="send-icon" class="h-2/5 absolute right-send cursor-pointer">
     </footer>
 </div> 
 

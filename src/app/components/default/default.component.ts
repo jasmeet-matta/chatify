@@ -92,6 +92,8 @@ export class DefaultComponent implements OnInit {
     obj.id = this.generateId();
     obj.name = this.modalInput;
     this.webSocketService.sendMessage(obj);
+    sessionStorage.setItem('name',JSON.stringify(this.modalInput));
+    sessionStorage.setItem('id',JSON.stringify(id));
     this.modalInput = ''; // Clear the input text after sending the message
     console.log(id);
   }

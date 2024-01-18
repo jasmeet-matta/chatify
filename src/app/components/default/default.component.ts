@@ -3,6 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ModalComponent } from '../modal/modal.component';
 import { BackdropComponent } from '../backdrop/backdrop.component';
+import { WebSocketService } from '../../services/web-socket.service';
 
 @Component({
   selector: 'app-default',
@@ -24,27 +25,39 @@ export class DefaultComponent implements OnInit {
   public smiley:string = 'assets/smiley.png';
   public showEmojis:boolean = false;
   public inputString:any = '';
+  public modalInput:string = '';
 
-  isModalOpen = false;
-  
-  ws:any
-
-  constructor(){
+  constructor(private webSocketService:WebSocketService){ 
   }
 
-  ngOnInit() { 
+  ngOnInit() {
+    // Example: Sending a message
+    this.webSocketService.sendMessage('Hello WebSocket!');
+    
+    // Example: Receiving messages
+    this.webSocketService.getMessage().subscribe((event: MessageEvent) => {
+      // Convert the blob to an array buffer
+      const arrayBufferPromise = event.data.arrayBuffer();
+      arrayBufferPromise.then((arrayBuffer) => {
+        // Convert the array buffer to text
+        const text = new TextDecoder('utf-8').decode(arrayBuffer);
+        
+        console.log('Received message:', text);
+        // Handle the received message as needed
+      });
+    });
   }
 
   ngAfterViewInit(){
-    this.ws = new WebSocket('wss://wooden-strengthened-origami.glitch.me/');
+    // this.ws = new WebSocket('wss://wooden-strengthened-origami.glitch.me/');
 
-    this.ws.onopen = () => {
-      console.log('Connected to the server');
-    };
+    // this.ws.onopen = () => {
+    //   console.log('Connected to the server');
+    // };
 
-    this.ws.onclose = () => {
-      console.log('Disconnected from server'); 
-    };
+    // this.ws.onclose = () => {
+    //   console.log('Disconnected from server'); 
+    // };
     // this.input.nativeElement.focus();
   }
 
@@ -60,7 +73,7 @@ export class DefaultComponent implements OnInit {
   }
 
   onInput(){
-    console.log(this.inputString);
+    // console.log(this.inputString);
   }
   
   toggleEmojiDrawer(){
@@ -73,17 +86,27 @@ export class DefaultComponent implements OnInit {
   }
   
   handleModalSubmit(inputText: any) {
-    console.log('Submitted input:', inputText);
-    // You can now use the submitted input as needed in the parent component.
+    let id = this.generateId();
+    let obj = { name:'', id:0}
+    console.log('name of user:', this.modalInput);
+    obj.id = this.generateId();
+    obj.name = this.modalInput;
+    this.webSocketService.sendMessage(obj);
+    this.modalInput = ''; // Clear the input text after sending the message
+    console.log(id);
   }
 
-  sendMessage(message) {
-    this.ws.send(message);
-  }
+  // sendMessage(message) {
+  //   this.ws.send(message);
+  // }
 
   onSubmit(){
-    this.sendMessage(this.inputString);
+    this.webSocketService.sendMessage(this.inputString);
     this.inputString = '';
+  }
+
+  generateId(){
+   return Math.floor(Math.random() * 99999);
   }
 
 }

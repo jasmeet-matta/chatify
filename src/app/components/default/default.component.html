@@ -5,9 +5,43 @@
         <img [src]="menu" alt="menu-icon" class="menu-icon h-3/6 mr-4 cursor-pointer ml-auto">
     </header>
 
-    <div class="flex-grow bg-red-100 w-11/12 mx-auto">
-      <!-- <app-backdrop></app-backdrop>
-      <app-modal (submitEvent)="handleModalSubmit($event)" [(inputText)]="modalInput"></app-modal> -->
+    <div class="flex-grow w-11/12 mx-auto bg-red-100 overflow-y-scroll">
+    @if (modalViewToggle()) {
+        <app-backdrop></app-backdrop>
+        <app-modal (submitEvent)="handleModalSubmit($event)" [(inputText)]="modalInput"></app-modal>
+    }
+    <div class="flex flex-col">
+
+        <div class="bg-yellow-100 p-3 mb-4 rounded-md self-start inline-block max-w-[75%]">
+            <span class="whitespace-normal break-words">
+                hi lmwldwldmlwkfmkelwfg
+            </span>
+            <div class="flex justify-end mt-1">
+                <span class="text-xs font-bold text-gray-500">12:45</span>
+            </div>
+        </div>
+        
+        
+        <div class="bg-blue-100 p-3 mb-4 rounded-md self-end inline-block max-w-[75%]">
+            <span class="whitespace-normal break-words">
+                hi lmwldwldmlwkfmkelwfg
+            </span>
+            <div class="flex justify-end mt-1">
+                <span class="text-xs font-bold text-gray-500">12:45</span>
+            </div>
+        </div>
+
+        <div class="bg-yellow-100 p-3 mb-4 rounded-md self-start inline-block max-w-[75%]">
+            <span class="whitespace-normal break-words">
+                hi lmwldwldmlwkfmkelwfg lmwldwldmlwkfmkelwfglmwldwldmlwkfmkelwfg lmwldwldmlwkfmkelwfglmwldwldmlwkfmkelwfglmwldwldmlwkfmkelwfglmwldwldmlwkfmkelwfg
+            </span>
+            <div class="flex justify-end mt-1">
+                <span class="text-xs font-bold text-gray-500">12:45</span>
+            </div>
+        </div>
+
+      </div>
+       
     </div>
 
     <footer class="input-message-box relative flex place-content-center items-center">

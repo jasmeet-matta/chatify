@@ -1,4 +1,4 @@
-import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA, HostListener, ViewChild, ElementRef} from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA, HostListener, ViewChild, ElementRef, signal} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ModalComponent } from '../modal/modal.component';
@@ -26,26 +26,24 @@ export class DefaultComponent implements OnInit {
   public showEmojis:boolean = false;
   public inputString:any = '';
   public modalInput:string = '';
+  public modalViewToggle = signal(false);
+  public incomingMessages:[] = [];
 
-  constructor(private webSocketService:WebSocketService){ 
-  }
+  constructor(private webSocketService:WebSocketService){ }
 
   ngOnInit() {
     // Example: Sending a message
-    this.webSocketService.sendMessage('Hello WebSocket!');
-    
-    // Example: Receiving messages
-    this.webSocketService.getMessage().subscribe((event: MessageEvent) => {
-      // Convert the blob to an array buffer
-      const arrayBufferPromise = event.data.arrayBuffer();
-      arrayBufferPromise.then((arrayBuffer) => {
-        // Convert the array buffer to text
-        const text = new TextDecoder('utf-8').decode(arrayBuffer);
-        
-        console.log('Received message:', text);
-        // Handle the received message as needed
-      });
-    });
+    // this.webSocketService.sendMessage('Hello WebSocket!');
+    let name, id;
+    name = sessionStorage.getItem('name');
+    id = sessionStorage.getItem('id');
+    console.log((JSON.parse(name)),JSON.parse(id)); 
+    if(name && id){
+      this.modalViewToggle.set(false);
+      this.webSocketService.connect();
+    }else{
+      this.modalViewToggle.set(true);
+    }
   }
 
   ngAfterViewInit(){
@@ -84,18 +82,69 @@ export class DefaultComponent implements OnInit {
     console.log(event.detail.unicode);
     this.inputString += event.detail.unicode;
   }
+
+  generateId(){
+    return Math.floor(Math.random() * 99999);
+  }
   
   handleModalSubmit(inputText: any) {
+    this.webSocketService.connect();
+
     let id = this.generateId();
     let obj = { name:'', id:0}
+
     console.log('name of user:', this.modalInput);
+
     obj.id = this.generateId();
     obj.name = this.modalInput;
-    this.webSocketService.sendMessage(obj);
+    this.setFlagProcessing();    
+
+  // Subscribe to isChatConnected observable to be notified when the connection is open
+  const subscription = this.webSocketService.isChatConnected.subscribe((status) => {
+    if (status) {
+      // Connection is open, send the message
+      this.webSocketService.sendMessage(obj);
+
+      // Generate a random delay between 1000 and 1500 ms
+      const randomDelay = Math.floor(Math.random() * (1500 - 1000 + 1)) + 1000;
+      setTimeout(() => {
+        this.modalViewToggle.set(false);
+        this.modalInput = ''; // Clear the input text after sending the message
+        subscription.unsubscribe(); // Unsubscribe to avoid memory leaks
+      }, randomDelay);
+    } else {
+      // Connection is not open yet
+      return;
+    }
+  });
+
     sessionStorage.setItem('name',JSON.stringify(this.modalInput));
     sessionStorage.setItem('id',JSON.stringify(id));
-    this.modalInput = ''; // Clear the input text after sending the message
-    console.log(id);
+  }
+
+  receiveMessages(){
+    // Example: Receiving messages
+    this.webSocketService.getMessage().subscribe((event: MessageEvent) => {
+      // Convert the blob to an array buffer
+      const arrayBufferPromise = event.data.arrayBuffer();
+      arrayBufferPromise.then((arrayBuffer) => {
+        // Convert the array buffer to text
+        const text = new TextDecoder('utf-8').decode(arrayBuffer);
+        console.log('Received message:', text);
+        // Handle the received message as needed
+      });
+    });
+  }
+
+  // checkChatConnectedStatus(){
+  //   this.webSocketService.isChatConnected.subscribe((status)=>{
+  //     return status;
+  //   })
+  // }
+
+  setFlagProcessing(){
+    this.webSocketService.isJoining.next(true);
+    console.log(this.webSocketService.isJoining.value,'flag');
   }
 
   // sendMessage(message) {
@@ -105,10 +154,6 @@ export class DefaultComponent implements OnInit {
   onSubmit(){
     this.webSocketService.sendMessage(this.inputString);
     this.inputString = '';
-  }
-
-  generateId(){
-   return Math.floor(Math.random() * 99999);
   }
 
 }

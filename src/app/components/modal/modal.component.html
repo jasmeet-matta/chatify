@@ -16,7 +16,17 @@
                 <input #inputbox type="text" [(ngModel)]="inputText" (ngModelChange)="inputTextChange.emit($event)" class="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm" placeholder="your name here...">
               </div>
             </div>
-            <button (click)="onSubmit($event)" type="submit" class="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-green-500 text-white hover:bg-green-600 focus:outline-none focus:ring-1 focus:ring-green-500 focus:ring-offset-2 transition-all text-sm">Join Chat</button>
+              <button (click)="onSubmit($event)" type="submit" class="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-green-500 text-white hover:bg-green-600 focus:outline-none focus:ring-1 focus:ring-green-500 focus:ring-offset-2 transition-all text-sm">
+                <!-- <h4>{{isJoining}}</h4>   -->
+               @if (isJoining) {
+                  <div class="flex items-center justify-center"> 
+                    <div class="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-white border-4"></div>
+                    <div class="ml-2"> Processing...</div>
+                </div>
+                }@else {
+                  <div>Join Chat</div>
+                } 
+              </button>
           </div>
       </div>
     </div>

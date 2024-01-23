@@ -10,71 +10,20 @@
         <app-backdrop></app-backdrop>
         <app-modal (submitEvent)="handleModalSubmit($event)" [(inputText)]="modalInput"></app-modal>
     }
-    <div class="flex flex-col p-2 h-10">
+        <div class="flex flex-col p-2 h-10">
 
-        <div class="shadow-md bg-white p-3 rounded-md self-start inline-block max-w-[75%]">
-            <span class="whitespace-normal break-words">
-                lorem ipsum dolor sit amet
-            </span>
+            @for (message of incomingMessages; track message.id) {
+                <div class="shadow-md bg-white p-3 rounded-md self-start inline-block max-w-[75%]" [ngClass]="message.id ==0 ? 'self-end' :'self-start'" [style.background-color]="message.id == 0 ? '#e76f51' : 'white'">
+                    <span class="whitespace-normal break-words">
+                        {{message.message}}
+                    </span>
+                </div>
+                <div class="flex justify-start mt-0.5 mb-3" [ngClass]="message.id ==0 ? 'justify-end' : 'justify-start'">
+                    <span class="text-xs text-gray-400">{{ message.name | titlecase }} | {{message.time}}</span>
+                </div>
+            }
+            
         </div>
-        <div class="flex justify-start mt-0.5 mb-3">
-            <span class="text-xs text-gray-400">Epictetus | 12:45</span>
-        </div>
-
-
-        <div class="shadow-md bg-[#e76f51] p-3 bg-white rounded-md self-end inline-block max-w-[75%]">
-            <span class="whitespace-normal break-words">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </span>
-        </div>
-        <div class="flex justify-end mt-0.5 mb-3">
-            <span class="text-xs text-gray-400">12:50</span>
-        </div>
-
-        <div class="shadow-md bg-white p-3 rounded-md self-start inline-block max-w-[75%]">
-            <span class="whitespace-normal break-words">
-                neque gravida in fermentum et sollicitudin
-            </span>
-        </div>
-        <div class="flex justify-start mt-0.5 mb-3">
-            <span class="text-xs text-gray-400">Seneca | 12:52</span>
-        </div>
-        <div class="shadow-md bg-white p-3 rounded-md self-start inline-block max-w-[75%]">
-            <span class="whitespace-normal break-words"> 
-                auctor eu augue ut lectus arcu bibendum at blandit cursus
-            </span>
-        </div>
-        <div class="flex justify-start mt-0.5 mb-0.5">
-            <span class="text-xs text-gray-400">Marcus | 12:59</span>
-        </div>
-        <div class="shadow-md bg-[#e76f51] p-3 bg-white rounded-md self-end inline-block max-w-[75%]">
-            <span class="whitespace-normal break-words">
-                augue neque gravida in fermentum et sollicitudin ac orci phasellus egestas tellus
-            </span>
-        </div>
-        <div class="flex justify-end mt-0.5 mb-3">
-            <span class="text-xs text-gray-400">12:50</span>
-        </div>
-
-        <div class="shadow-md bg-white p-3 rounded-md self-start inline-block max-w-[75%]">
-            <span class="whitespace-normal break-words">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </span>
-        </div>
-        <div class="flex justify-start mt-0.5 mb-3">
-            <span class="text-xs text-gray-400">Seneca | 12:52</span>
-        </div>
-        <div class="shadow-md bg-white p-3 rounded-md self-start inline-block max-w-[75%]">
-            <span class="whitespace-normal break-words"> 
-                hdiam quis enim lobortis scelerisque fermentum dui faucibus in
-            </span>
-        </div>
-        <div class="flex justify-start mt-0.5 mb-0.5">
-            <span class="text-xs text-gray-400">Marcus | 12:59</span>
-        </div>
-
-      </div>
-       
     </div>
 
     <footer class="input-message-box relative flex place-content-center items-center">
@@ -83,7 +32,7 @@
         }        
         <img [src]="smiley" alt="smiley-icon" (click)="toggleEmojiDrawer()" class="h-2/5 absolute left-smiley cursor-pointer">
 
-        <input type="text" class="w-11/12 h-3/5 pl-14 rounded-3xl shadow-md pl-[4rem]" [(ngModel)]="inputString" (input)="onInput()" placeholder="{{inputPlaceholder}}" alt="input-box">
+        <input type="text" class="w-11/12 h-3/5 pl-14 rounded-3xl shadow-md pl-[4rem]" [(ngModel)]="inputString" (input)="onInput()" placeholder="{{inputPlaceholder}}" (keyup.enter)="onSubmit()" alt="input-box">
         <img [src]="send" (click)="onSubmit()" alt="send-icon" class="h-2/5 absolute right-send cursor-pointer">
     </footer>
 </div> 

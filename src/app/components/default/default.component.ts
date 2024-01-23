@@ -1,6 +1,6 @@
-import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA, HostListener, ViewChild, ElementRef, signal} from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA, HostListener, signal} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import { ModalComponent } from '../modal/modal.component';
 import { BackdropComponent } from '../backdrop/backdrop.component';
 import { WebSocketService } from '../../services/web-socket.service';
@@ -8,7 +8,7 @@ import { WebSocketService } from '../../services/web-socket.service';
 @Component({
   selector: 'app-default',
   standalone: true,
-  imports: [FormsModule,ReactiveFormsModule,CommonModule,ModalComponent,BackdropComponent],
+  imports: [FormsModule,ReactiveFormsModule,CommonModule,ModalComponent,BackdropComponent,NgClass],
   templateUrl: './default.component.html',
   styleUrl: './default.component.scss',
   schemas: [
@@ -27,11 +27,14 @@ export class DefaultComponent implements OnInit {
   public inputString:any = '';
   public modalInput:string = '';
   public modalViewToggle = signal(false);
-  public incomingMessages:[] = [];
+  public incomingMessages:any[] = [];
+  public id:number;
+  public username:string;
 
   constructor(private webSocketService:WebSocketService){ }
 
   ngOnInit() {
+    this.loadPrevMessages();
     // Example: Sending a message
     // this.webSocketService.sendMessage('Hello WebSocket!');
     let name, id;
@@ -41,8 +44,21 @@ export class DefaultComponent implements OnInit {
     if(name && id){
       this.modalViewToggle.set(false);
       this.webSocketService.connect();
+      this.receiveMessages();
+      this.id = id;
+      this.username = JSON.parse(name);
     }else{
       this.modalViewToggle.set(true);
+    }
+  }
+
+  loadPrevMessages(){
+    // Retrieve stored messages from session storage
+    const storedMessages = sessionStorage.getItem('incomingMessages');
+
+    // Parse the stored messages and update the array
+    if (storedMessages) {
+      this.incomingMessages = JSON.parse(storedMessages);
     }
   }
 
@@ -97,6 +113,8 @@ export class DefaultComponent implements OnInit {
 
     obj.id = this.generateId();
     obj.name = this.modalInput;
+    this.id = obj.id;
+    this.username = obj.name;
     this.setFlagProcessing();    
 
   // Subscribe to isChatConnected observable to be notified when the connection is open
@@ -112,6 +130,7 @@ export class DefaultComponent implements OnInit {
         this.modalInput = ''; // Clear the input text after sending the message
         subscription.unsubscribe(); // Unsubscribe to avoid memory leaks
       }, randomDelay);
+      this.receiveMessages();
     } else {
       // Connection is not open yet
       return;
@@ -130,7 +149,14 @@ export class DefaultComponent implements OnInit {
       arrayBufferPromise.then((arrayBuffer) => {
         // Convert the array buffer to text
         const text = new TextDecoder('utf-8').decode(arrayBuffer);
-        console.log('Received message:', text);
+
+        //alert when new person joins
+        if(Object.keys(JSON.parse(text)).length == 2){
+          alert(`${JSON.parse(text).name} joined the chat`);
+        }else{
+          this.incomingMessages.push(JSON.parse(text));
+          sessionStorage.setItem('incomingMessages', JSON.stringify(this.incomingMessages));
+        }
         // Handle the received message as needed
       });
     });
@@ -152,8 +178,24 @@ export class DefaultComponent implements OnInit {
   // }
 
   onSubmit(){
-    this.webSocketService.sendMessage(this.inputString);
-    this.inputString = '';
+    if(this.inputString !== ''){
+      let obj = {name:'',id:0,message:'',time:''};
+      obj.name =  this.username;
+      obj.id = this.id;
+      obj.message = this.inputString;
+      obj.time = this.getCurrTime();
+      //explicit id zero to identify outgoing messages
+      this.incomingMessages.push({...obj,id:0}); 
+      this.webSocketService.sendMessage(JSON.stringify(obj));
+      this.inputString = '';
+    }
+  }
+
+  getCurrTime(){
+    let time = new Date();
+    let currTime;
+    currTime  = String(time.getHours()).padStart(2, '0') + ':' + String(time.getMinutes()).padStart(2, '0');
+    return currTime;
   }
 
 }

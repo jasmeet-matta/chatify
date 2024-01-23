@@ -14,9 +14,10 @@ export class ModalComponent {
   @ViewChild('inputbox') input: ElementRef;
   
   @Output() submitEvent = new EventEmitter<string>();
-  @Input() inputText:string = '';
   @Output() inputTextChange: EventEmitter<string> = new EventEmitter<string>();
+  @Input() inputText:string = '';
   public isJoining:boolean = false;
+  public isMinLen:boolean =  false;
 
   constructor(private webSocketService:WebSocketService){}
 
@@ -24,7 +25,6 @@ export class ModalComponent {
     this.submitEvent.emit(event);
     // console.log(this.isJoining.value,'val from modal for flag');
     this.isJoining = this.checkProcessingStatus();
-    
   }
 
   checkProcessingStatus(){
@@ -33,8 +33,13 @@ export class ModalComponent {
 
   ngAfterViewInit(){
     this.input.nativeElement.focus();
-    // console.log(this.isJoining.value);
-    
   }
-  
+
+  checkMinLen(){
+    if(this.inputText.length <= 3){
+      this.isMinLen = false;
+    }else{
+      this.isMinLen = true;
+    }
+  }
 }

@@ -13,10 +13,10 @@
           <div class="grid gap-y-4">
             <div>
               <div class="relative">
-                <input #inputbox type="text" [(ngModel)]="inputText" (ngModelChange)="inputTextChange.emit($event)" class="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm" placeholder="your name here...">
+                <input #inputbox type="text" (keyup)="checkMinLen()" [(ngModel)]="inputText" (ngModelChange)="inputTextChange.emit($event)" class="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm" placeholder="your name here...">
               </div>
             </div>
-              <button (click)="onSubmit($event)" type="submit" class="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-green-500 text-white hover:bg-green-600 focus:outline-none focus:ring-1 focus:ring-green-500 focus:ring-offset-2 transition-all text-sm">
+              <button (click)="onSubmit($event)" [disabled]="!isMinLen" type="submit" class="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-green-500 text-white hover:bg-green-600 focus:outline-none focus:ring-1 focus:ring-green-500 focus:ring-offset-2 transition-all text-sm disabled:opacity-50 disabled:hover:cursor-not-allowed disabled:hover:bg-green-500">
                 <!-- <h4>{{isJoining}}</h4>   -->
                @if (isJoining) {
                   <div class="flex items-center justify-center"> 

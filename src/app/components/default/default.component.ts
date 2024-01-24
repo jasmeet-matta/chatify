@@ -1,4 +1,4 @@
-import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA, HostListener, signal} from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA, HostListener, signal, ViewChild, ElementRef} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, NgClass } from '@angular/common';
 import { ModalComponent } from '../modal/modal.component';
@@ -16,6 +16,8 @@ import { WebSocketService } from '../../services/web-socket.service';
   ],
 })
 export class DefaultComponent implements OnInit {
+
+  @ViewChild('scrollMe',{static:true}) scrollToBottom:ElementRef;
 
   public title:string = 'Chatify';
   public inputPlaceholder:string = 'type your message here...'
@@ -155,6 +157,7 @@ export class DefaultComponent implements OnInit {
           alert(`${JSON.parse(text).name} joined the chat`);
         }else{
           this.incomingMessages.push(JSON.parse(text));
+          this.scrollBottom();
           sessionStorage.setItem('incomingMessages', JSON.stringify(this.incomingMessages));
         }
         // Handle the received message as needed
@@ -188,7 +191,14 @@ export class DefaultComponent implements OnInit {
       this.incomingMessages.push({...obj,id:0}); 
       this.webSocketService.sendMessage(JSON.stringify(obj));
       this.inputString = '';
+      this.scrollBottom();
     }
+  }
+
+  scrollBottom(){
+    setTimeout(() => {
+      this.scrollToBottom.nativeElement.scrollTop = this.scrollToBottom.nativeElement.scrollHeight;    
+    }, 99);
   }
 
   getCurrTime(){

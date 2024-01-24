@@ -5,7 +5,7 @@
         <img [src]="menu" alt="menu-icon" class="menu-icon h-3/6 mr-4 cursor-pointer ml-auto">
     </header>
 
-    <div class="flex-grow w-11/12 mx-auto overflow-y-auto scroll-smooth" id="journal-scroll">
+    <div class="flex-grow w-11/12 mx-auto overflow-y-scroll scroll-smooth" #scrollMe id="journal-scroll">
     @if (modalViewToggle()) {
         <app-backdrop></app-backdrop>
         <app-modal (submitEvent)="handleModalSubmit($event)" [(inputText)]="modalInput"></app-modal>
@@ -30,7 +30,7 @@
         @if (showEmojis){
             <emoji-picker (emoji-click)="getEmoji($event)" class="light absolute bottom-5 mb-14 left-0 w-6/12 h-64 -ml-40 drawer"></emoji-picker>
         }        
-        <img [src]="smiley" alt="smiley-icon" (click)="toggleEmojiDrawer()" class="h-2/5 absolute left-smiley cursor-pointer">
+        <img [src]="smiley" alt="smiley-icon" (click)="toggleEmojiDrawer()" class="h-2/5 absolute left-smiley cursor-pointer"> 
 
         <input type="text" class="w-11/12 h-3/5 pl-14 rounded-3xl shadow-md pl-[4rem]" [(ngModel)]="inputString" (input)="onInput()" placeholder="{{inputPlaceholder}}" (keyup.enter)="onSubmit()" alt="input-box">
         <img [src]="send" (click)="onSubmit()" alt="send-icon" class="h-2/5 absolute right-send cursor-pointer">

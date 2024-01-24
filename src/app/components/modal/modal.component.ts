@@ -22,9 +22,11 @@ export class ModalComponent {
   constructor(private webSocketService:WebSocketService){}
 
   onSubmit(event) {
-    this.submitEvent.emit(event);
-    // console.log(this.isJoining.value,'val from modal for flag');
-    this.isJoining = this.checkProcessingStatus();
+    if(this.isMinLen){
+      this.submitEvent.emit(event);
+      // console.log(this.isJoining.value,'val from modal for flag');
+      this.isJoining = this.checkProcessingStatus();
+    }
   }
 
   checkProcessingStatus(){

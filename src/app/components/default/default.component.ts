@@ -1,9 +1,10 @@
-import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA, HostListener, signal, ViewChild, ElementRef} from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA, HostListener, signal, ViewChild, ElementRef, Inject} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule, NgClass } from '@angular/common';
+import { CommonModule, DOCUMENT, NgClass, TitleCasePipe } from '@angular/common';
 import { ModalComponent } from '../modal/modal.component';
 import { BackdropComponent } from '../backdrop/backdrop.component';
 import { WebSocketService } from '../../services/web-socket.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-default',
@@ -18,6 +19,7 @@ import { WebSocketService } from '../../services/web-socket.service';
 export class DefaultComponent implements OnInit {
 
   @ViewChild('scrollMe',{static:true}) scrollToBottom:ElementRef;
+  @ViewChild('inputbox') input: ElementRef;
 
   public title:string = 'Chatify';
   public inputPlaceholder:string = 'type your message here...'
@@ -33,9 +35,21 @@ export class DefaultComponent implements OnInit {
   public id:number;
   public username:string;
 
-  constructor(private webSocketService:WebSocketService){ }
+  constructor(
+    private webSocketService:WebSocketService,
+    private notificationService:NotificationService,
+    private titlecasePipe:TitleCasePipe,
+    @Inject(DOCUMENT) private document: Document
+  ){ }
 
   ngOnInit() {
+    // this.notificationService.showNotification('');
+      Notification.requestPermission().then((permission) => {
+        if (permission !== 'granted') {
+          console.error('Notification permission denied');
+        }
+      });
+
     this.loadPrevMessages();
     // Example: Sending a message
     // this.webSocketService.sendMessage('Hello WebSocket!');
@@ -49,9 +63,14 @@ export class DefaultComponent implements OnInit {
       this.receiveMessages();
       this.id = id;
       this.username = JSON.parse(name);
+      this.scrollBottom();
     }else{
       this.modalViewToggle.set(true);
     }
+  }
+
+  askNotificationAccess(){
+    
   }
 
   loadPrevMessages(){
@@ -74,7 +93,6 @@ export class DefaultComponent implements OnInit {
     // this.ws.onclose = () => {
     //   console.log('Disconnected from server'); 
     // };
-    // this.input.nativeElement.focus();
   }
 
   @HostListener('document:click', ['$event'])
@@ -89,7 +107,7 @@ export class DefaultComponent implements OnInit {
   }
 
   onInput(){
-    // console.log(this.inputString);
+    // console.log(this.inputString); 
   }
   
   toggleEmojiDrawer(){
@@ -157,6 +175,8 @@ export class DefaultComponent implements OnInit {
           alert(`${JSON.parse(text).name} joined the chat`);
         }else{
           this.incomingMessages.push(JSON.parse(text));
+          let notifMessage = JSON.parse(text);
+          this.handleNewMessage(notifMessage);
           this.scrollBottom();
           sessionStorage.setItem('incomingMessages', JSON.stringify(this.incomingMessages));
         }
@@ -192,6 +212,35 @@ export class DefaultComponent implements OnInit {
       this.webSocketService.sendMessage(JSON.stringify(obj));
       this.inputString = '';
       this.scrollBottom();
+      sessionStorage.setItem('incomingMessages', JSON.stringify(this.incomingMessages));
+    }
+  }
+
+  playNotificationSound(){
+    let audio = new Audio();
+    audio.src = "/assets/notification.mp3";
+    audio.load();
+    audio.play();
+  }
+
+  async handleNewMessage(message: any): Promise<void> {
+    if (this.document.visibilityState === 'visible') {
+      // Don't show notification when the tab is visible
+      return;
+    }
+    this.playNotificationSound();
+    // Show a notification
+    let name = this.titlecasePipe.transform(message.name);
+    const notification = this.notificationService.showNotification(name, {
+      body: message.message,
+      icon: '/assets/chat.png',
+      silent:true
+    });
+    // Attach click event listener to the notification
+    if (notification) {
+      (await notification).onclick = (event: Event) => {
+        window.focus();
+      };
     }
   }
 

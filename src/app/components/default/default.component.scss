@@ -1,0 +1,47 @@
+.main-card {
+    height: 70dvh;
+    width: 60dvw;
+    background: #F8F8F8;
+    box-shadow: 0px 30px 45px -2px rgba(29, 29, 29, 0.25);
+}
+
+.top-bar{
+    height: 15%;
+    background-color: #F8F8F8;
+    border-bottom: 1px solid #d9d9d9;
+
+    .chat-icon{
+        filter: drop-shadow(5px 5px 8px rgba(0, 0, 0, 0.25));
+    }
+    .topbar-title{
+        color:#484848;
+    }
+}
+
+.input-message-box{
+    height: 15%;
+}
+.left-smiley{
+    left:5.8%;
+}
+.left-placeholder{
+    left:10%;
+}
+.right-send{
+    right:6%;
+}
+
+#journal-scroll::-webkit-scrollbar {
+    width: 5px;
+    cursor: pointer;
+
+}
+#journal-scroll::-webkit-scrollbar-track {
+    background-color: rgba(229, 231, 235, var(--bg-opacity));
+    cursor: pointer;
+    /*background: red;*/
+}
+#journal-scroll::-webkit-scrollbar-thumb {
+    cursor: pointer;
+    background-color: hsl(0, 0%, 92%);
+}

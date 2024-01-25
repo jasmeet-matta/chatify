@@ -1,1 +1,41 @@
-<p>default works!</p>
+<div class="main-card flex flex-col rounded-2xl">
+    <header class="top-bar rounded-t-2xl w-full flex flex-row items-center mb-4">
+        <img [src]="chatRoom" alt="chat-room-icon" class="chat-icon h-4/6 ml-6 mr-3">
+        <h2 class="topbar-title font-bold text-3xl">{{title}}</h2>
+        <img [src]="menu" alt="menu-icon" class="menu-icon h-3/6 mr-4 cursor-pointer ml-auto">
+    </header>
+
+    <div class="flex-grow w-11/12 mx-auto overflow-y-scroll scroll-smooth" #scrollMe id="journal-scroll">
+    @if (modalViewToggle()) {
+        <app-backdrop></app-backdrop>
+        <app-modal (submitEvent)="handleModalSubmit($event)" [(inputText)]="modalInput"></app-modal>
+    }
+        <div class="flex flex-col p-2 h-10">
+
+            @for (message of incomingMessages; track message.id) {
+                <div class="shadow-md bg-white p-3 rounded-md self-start inline-block max-w-[75%]" [ngClass]="message.id ==0 ? 'self-end' :'self-start'" [style.background-color]="message.id == 0 ? '#e76f51' : 'white'">
+                    <span class="whitespace-normal break-words">
+                        {{message.message}}
+                    </span>
+                </div>
+                <div class="flex justify-start mt-0.5 mb-3" [ngClass]="message.id ==0 ? 'justify-end' : 'justify-start'">
+                    <span class="text-xs text-gray-400">{{ message.name | titlecase }} | {{message.time}}</span>
+                </div>
+            }
+            
+        </div>
+    </div>
+
+    <footer class="input-message-box relative flex place-content-center items-center">
+        @if (showEmojis){
+            <emoji-picker (emoji-click)="getEmoji($event)" class="light absolute bottom-5 mb-14 left-0 w-6/12 h-64 -ml-40 drawer"></emoji-picker>
+        }        
+        <img [src]="smiley" alt="smiley-icon" (click)="toggleEmojiDrawer()" class="h-2/5 absolute left-smiley cursor-pointer"> 
+
+        <input #inputbox type="text" class="w-11/12 h-3/5 pl-14 rounded-3xl shadow-md pl-[4rem]" [(ngModel)]="inputString" (input)="onInput()" placeholder="{{inputPlaceholder}}" (keyup.enter)="onSubmit()" alt="input-box">
+        <img [src]="send" (click)="onSubmit()" alt="send-icon" class="h-2/5 absolute right-send cursor-pointer">
+    </footer>
+</div> 
+
+
+

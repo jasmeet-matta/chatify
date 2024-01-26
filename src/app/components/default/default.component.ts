@@ -43,7 +43,6 @@ export class DefaultComponent implements OnInit {
   ){ }
 
   ngOnInit() {
-    // this.notificationService.showNotification('');
       Notification.requestPermission().then((permission) => {
         if (permission !== 'granted') {
           console.error('Notification permission denied');
@@ -67,10 +66,6 @@ export class DefaultComponent implements OnInit {
     }else{
       this.modalViewToggle.set(true);
     }
-  }
-
-  askNotificationAccess(){
-    
   }
 
   loadPrevMessages(){
@@ -105,17 +100,12 @@ export class DefaultComponent implements OnInit {
     }
     this.showEmojis = clickedOnSmileyIcon || emojiDrawer;
   }
-
-  onInput(){
-    // console.log(this.inputString); 
-  }
   
   toggleEmojiDrawer(){
     this.showEmojis = !this.showEmojis
   }
 
   getEmoji(event:any){
-    console.log(event.detail.unicode);
     this.inputString += event.detail.unicode;
   }
 
@@ -172,7 +162,7 @@ export class DefaultComponent implements OnInit {
 
         //alert when new person joins
         if(Object.keys(JSON.parse(text)).length == 2){
-          alert(`${JSON.parse(text).name} joined the chat`);
+          // alert(`${JSON.parse(text).name} joined the chat`);
         }else{
           this.incomingMessages.push(JSON.parse(text));
           let notifMessage = JSON.parse(text);

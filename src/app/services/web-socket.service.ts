@@ -65,8 +65,4 @@ export class WebSocketService {
   getMessage(): Observable<MessageEvent> {
     return this.messageSubject.asObservable();
   }
-
-  sendDisconnectAlert(){
-    
-  }
 }

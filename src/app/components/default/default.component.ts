@@ -119,8 +119,6 @@ export class DefaultComponent implements OnInit {
     let id = this.generateId();
     let obj = { name:'', id:0}
 
-    console.log('name of user:', this.modalInput);
-
     obj.id = this.generateId();
     obj.name = this.modalInput;
     this.id = obj.id;
@@ -163,7 +161,13 @@ export class DefaultComponent implements OnInit {
         //alert when new person joins
         if(Object.keys(JSON.parse(text)).length == 2){
           // alert(`${JSON.parse(text).name} joined the chat`);
-        }else{
+          const name = JSON.parse(text).name 
+          console.log(name + ' ' + 'joined the chat');  
+        }//alert when someone leaves the chat
+        else if(Object.keys(JSON.parse(text)).length == 1){
+          console.log(JSON.parse(text).message);
+        }
+        else{
           this.incomingMessages.push(JSON.parse(text));
           let notifMessage = JSON.parse(text);
           this.handleNewMessage(notifMessage);

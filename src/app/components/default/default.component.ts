@@ -157,42 +157,32 @@ export class DefaultComponent implements OnInit {
       arrayBufferPromise.then((arrayBuffer) => {
         // Convert the array buffer to text
         const text = new TextDecoder('utf-8').decode(arrayBuffer);
-
         //alert when new person joins
         if(Object.keys(JSON.parse(text)).length == 2){
           // alert(`${JSON.parse(text).name} joined the chat`);
           const name = JSON.parse(text).name 
-          console.log(name + ' ' + 'joined the chat');  
+          const joined = name + ' ' + 'joined the chat';
+          this.incomingMessages.push({type:'joinedLeft',text:joined})
         }//alert when someone leaves the chat
         else if(Object.keys(JSON.parse(text)).length == 1){
-          console.log(JSON.parse(text).message);
+          const left = JSON.parse(text).message;
+          this.incomingMessages.push({type:'joinedLeft',text:left})
         }
         else{
           this.incomingMessages.push(JSON.parse(text));
           let notifMessage = JSON.parse(text);
           this.handleNewMessage(notifMessage);
-          this.scrollBottom();
           sessionStorage.setItem('incomingMessages', JSON.stringify(this.incomingMessages));
         }
-        // Handle the received message as needed
+        this.scrollBottom();
       });
     });
   }
-
-  // checkChatConnectedStatus(){
-  //   this.webSocketService.isChatConnected.subscribe((status)=>{
-  //     return status;
-  //   })
-  // }
 
   setFlagProcessing(){
     this.webSocketService.isJoining.next(true);
     console.log(this.webSocketService.isJoining.value,'flag');
   }
-
-  // sendMessage(message) {
-  //   this.ws.send(message);
-  // }
 
   onSubmit(){
     if(this.inputString !== ''){

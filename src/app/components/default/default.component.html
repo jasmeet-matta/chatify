@@ -1,8 +1,22 @@
 <div class="main-card flex flex-col rounded-2xl">
-    <header class="top-bar rounded-t-2xl w-full flex flex-row items-center mb-4">
+    <header class="top-bar relative rounded-t-2xl w-full flex flex-row items-center mb-4">
         <img [src]="chatRoom" alt="chat-room-icon" class="chat-icon h-4/6 ml-6 mr-3">
         <h2 class="topbar-title font-bold text-3xl">{{title}}</h2>
-        <img [src]="menu" alt="menu-icon" class="menu-icon h-3/6 mr-4 cursor-pointer ml-auto">
+        <img [src]="menu" alt="menu-icon" class="menu-icon h-3/6 mr-4 cursor-pointer ml-auto" (click)="toggleHeaderMenu()">
+        @if (isToggle) {
+            <div #dropdownMenu class="drop-menu absolute mt-24 right-9 w-52 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                <div class="py-2 p-2" role="menu" aria-orientation="vertical" aria-labelledby="dropdown-button">
+                    <label class="relative inline-flex items-center m-2 cursor-pointer">
+                        <input type="checkbox" value="" class="sr-only peer">
+                        <div class="w-9 h-5 bg-gray-200 rounded-full peer peer-checked:bg-[#e76f51] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+                        <span class="ms-3 text-sm font-medium text-gray-600">Small toggle</span>
+                    </label>
+                    <!-- <a class="flex block rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer" role="menuitem">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16px" class="mr-2" viewBox="0 0 32 32" id="desktop"><path d="M30 2H2a2 2 0 0 0-2 2v18a2 2 0 0 0 2 2h9.998c-.004 1.446-.062 3.324-.61 4h-.404A.992.992 0 0 0 10 29c0 .552.44 1 .984 1h10.03A.992.992 0 0 0 22 29c0-.552-.44-1-.984-1h-.404c-.55-.676-.606-2.554-.61-4H30a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM14 24l-.002.004L14 24zm4.002.004L18 24h.002v.004zM30 20H2V4h28v16z"></path></svg> System
+                    </a> -->
+                </div>
+            </div>
+        }
     </header>
 
     <div class="flex-grow w-11/12 mx-auto overflow-y-scroll scroll-smooth" #scrollMe id="journal-scroll">
@@ -42,7 +56,4 @@
         <input #inputbox type="text" class="w-11/12 h-3/5 pl-14 rounded-3xl shadow-md pl-[4rem] pr-12" [(ngModel)]="inputString" placeholder="{{inputPlaceholder}}" (keyup.enter)="onSubmit()" alt="input-box">
         <img [src]="send" (click)="onSubmit()" alt="send-icon" class="h-2/5 absolute right-send cursor-pointer">
     </footer>
-</div> 
-
-
-
+</div>

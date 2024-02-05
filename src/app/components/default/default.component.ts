@@ -20,6 +20,7 @@ export class DefaultComponent implements OnInit {
 
   @ViewChild('scrollMe',{static:true}) scrollToBottom:ElementRef;
   @ViewChild('inputbox') input: ElementRef;
+  @ViewChild('dropdownMenu') toggleMenu: ElementRef;
 
   public title:string = 'Chatify';
   public inputPlaceholder:string = 'type your message here...'
@@ -34,6 +35,7 @@ export class DefaultComponent implements OnInit {
   public incomingMessages:any[] = [];
   public id:number;
   public username:string;
+  public isToggle:boolean = false;
 
   constructor(
     private webSocketService:WebSocketService,
@@ -95,10 +97,12 @@ export class DefaultComponent implements OnInit {
     const clickedElement = event.target as HTMLElement;
     const clickedOnSmileyIcon = clickedElement.classList.contains('left-smiley');
     const emojiDrawer = clickedElement.classList.contains('drawer');
-    if(clickedOnSmileyIcon == true){
+    const menuIcon = clickedElement.classList.contains('menu-icon');
+    if(clickedOnSmileyIcon == true || menuIcon == true){
       return;
     }
     this.showEmojis = clickedOnSmileyIcon || emojiDrawer;
+    this.isToggle = menuIcon;
   }
   
   toggleEmojiDrawer(){
@@ -208,6 +212,10 @@ export class DefaultComponent implements OnInit {
     audio.src = "/assets/notification.mp3";
     audio.load();
     audio.play();
+  }
+
+  toggleHeaderMenu(){
+    this.isToggle = !this.isToggle;
   }
 
   async handleNewMessage(message: any): Promise<void> {

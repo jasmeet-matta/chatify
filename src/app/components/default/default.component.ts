@@ -185,11 +185,11 @@ export class DefaultComponent implements OnInit {
   }
 
   onSubmit(){
-    if(this.inputString !== ''){
+    if(this.inputString.trim() !== ''){
       let obj = {name:'',id:0,message:'',time:''};
       obj.name =  this.username;
       obj.id = this.id;
-      obj.message = this.inputString;
+      obj.message = this.inputString.trim();
       obj.time = this.getCurrTime();
       //explicit id zero to identify outgoing messages
       this.incomingMessages.push({...obj,id:0}); 
@@ -197,6 +197,9 @@ export class DefaultComponent implements OnInit {
       this.inputString = '';
       this.scrollBottom();
       sessionStorage.setItem('incomingMessages', JSON.stringify(this.incomingMessages));
+    }else {
+      // Reset cursor to start if input is empty or contains only whitespace
+      this.inputString = '';
     }
   }
 

@@ -1,8 +1,19 @@
 <div class="main-card flex flex-col rounded-2xl">
-    <header class="top-bar rounded-t-2xl w-full flex flex-row items-center mb-4">
+    <header class="top-bar relative rounded-t-2xl w-full flex flex-row items-center mb-4">
         <img [src]="chatRoom" alt="chat-room-icon" class="chat-icon h-4/6 ml-6 mr-3">
         <h2 class="topbar-title font-bold text-3xl">{{title}}</h2>
-        <img [src]="menu" alt="menu-icon" class="menu-icon h-3/6 mr-4 cursor-pointer ml-auto">
+        <img [src]="menu" alt="menu-icon" class="menu-icon h-3/6 mr-4 cursor-pointer ml-auto" (click)="toggleHeaderMenu()">
+        @if (isToggle) {
+            <div #dropdownMenu class="drop-menu absolute mt-24 right-9 w-54 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                <div class="py-2 p-2" role="menu" aria-orientation="vertical" aria-labelledby="dropdown-button">
+                    <label class="relative inline-flex items-center m-2 cursor-pointer">
+                        <input type="checkbox" [checked]="playSound" (click)="togglePlaySound()" class="sr-only peer">
+                        <div class="w-9 h-5 bg-gray-200 rounded-full peer peer-checked:bg-[#e76f51] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+                        <span class="ms-3 text-sm font-medium text-gray-600">Notification Sounds</span>
+                    </label>
+                </div>
+            </div>
+        }
     </header>
 
     <div class="flex-grow w-11/12 mx-auto overflow-y-scroll scroll-smooth" #scrollMe id="journal-scroll">
@@ -13,16 +24,23 @@
         <div class="flex flex-col p-2 h-10">
 
             @for (message of incomingMessages; track message.id) {
-                <div class="shadow-md bg-white p-3 rounded-md self-start inline-block max-w-[75%]" [ngClass]="message.id ==0 ? 'self-end' :'self-start'" [style.background-color]="message.id == 0 ? '#e76f51' : 'white'">
-                    <span class="whitespace-normal break-words">
-                        {{message.message}}
-                    </span>
-                </div>
-                <div class="flex justify-start mt-0.5 mb-3" [ngClass]="message.id ==0 ? 'justify-end' : 'justify-start'">
-                    <span class="text-xs text-gray-400">{{ message.name | titlecase }} | {{message.time}}</span>
-                </div>
+                @if(message.type == 'joinedLeft'){
+                    <div class="flex justify-center notif mt-2 mb-2">
+                        <span class="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">{{
+                            message.text}}</span>
+                    </div>
+                } @else {
+                    <div class="shadow-md bg-white p-3 rounded-2xl self-start inline-block max-w-[75%]" [ngClass]="(message.id == 0) ? ['self-end', 'rounded-br-none'] : ['self-start', 'rounded-bl-none']" [style.background-color]="message.id == 0 ? '#e76f51' : 'white'">
+                        <span class="whitespace-normal break-words">
+                            {{message.message}}
+                        </span>
+                    </div>
+                    <div class="flex justify-start mt-0.5 mb-3" [ngClass]="message.id ==0 ? 'justify-end' : 'justify-start'">
+                        <span class="text-xs text-gray-400">{{ message.name | titlecase }} | {{message.time}}</span>
+                    </div>
+                }
+
             }
-            
         </div>
     </div>
 
@@ -32,10 +50,7 @@
         }        
         <img [src]="smiley" alt="smiley-icon" (click)="toggleEmojiDrawer()" class="h-2/5 absolute left-smiley cursor-pointer"> 
 
-        <input #inputbox type="text" class="w-11/12 h-3/5 pl-14 rounded-3xl shadow-md pl-[4rem]" [(ngModel)]="inputString" (input)="onInput()" placeholder="{{inputPlaceholder}}" (keyup.enter)="onSubmit()" alt="input-box">
+        <input #inputbox type="text" class="w-11/12 h-3/5 pl-14 rounded-3xl shadow-md pl-[4rem] pr-12" [(ngModel)]="inputString" placeholder="{{inputPlaceholder}}" (keyup.enter)="onSubmit()" alt="input-box">
         <img [src]="send" (click)="onSubmit()" alt="send-icon" class="h-2/5 absolute right-send cursor-pointer">
     </footer>
-</div> 
-
-
-
+</div>

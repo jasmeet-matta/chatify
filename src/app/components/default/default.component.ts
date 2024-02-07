@@ -20,6 +20,7 @@ export class DefaultComponent implements OnInit {
 
   @ViewChild('scrollMe',{static:true}) scrollToBottom:ElementRef;
   @ViewChild('inputbox') input: ElementRef;
+  @ViewChild('dropdownMenu') toggleMenu: ElementRef;
 
   public title:string = 'Chatify';
   public inputPlaceholder:string = 'type your message here...'
@@ -34,6 +35,8 @@ export class DefaultComponent implements OnInit {
   public incomingMessages:any[] = [];
   public id:number;
   public username:string;
+  public isToggle:boolean = false;
+  public playSound:boolean = true;
 
   constructor(
     private webSocketService:WebSocketService,
@@ -43,7 +46,6 @@ export class DefaultComponent implements OnInit {
   ){ }
 
   ngOnInit() {
-    // this.notificationService.showNotification('');
       Notification.requestPermission().then((permission) => {
         if (permission !== 'granted') {
           console.error('Notification permission denied');
@@ -69,19 +71,20 @@ export class DefaultComponent implements OnInit {
     }
   }
 
-  askNotificationAccess(){
-    
-  }
-
   loadPrevMessages(){
-    // Retrieve stored messages from session storage
     const storedMessages = sessionStorage.getItem('incomingMessages');
-
-    // Parse the stored messages and update the array
     if (storedMessages) {
       this.incomingMessages = JSON.parse(storedMessages);
     }
   }
+
+  getSoundPrefs(){
+    const sound = sessionStorage.getItem('notificationSound');
+    if(sound){
+      this.playSound = JSON.parse(sound);
+    }
+  }
+
 
   ngAfterViewInit(){
     // this.ws = new WebSocket('wss://wooden-strengthened-origami.glitch.me/');
@@ -100,14 +103,13 @@ export class DefaultComponent implements OnInit {
     const clickedElement = event.target as HTMLElement;
     const clickedOnSmileyIcon = clickedElement.classList.contains('left-smiley');
     const emojiDrawer = clickedElement.classList.contains('drawer');
-    if(clickedOnSmileyIcon == true){
+    const menuIcon = clickedElement.classList.contains('menu-icon');
+    const clickedInsideDropdown = clickedElement.closest('.drop-menu') !== null;    
+    if(clickedOnSmileyIcon == true || menuIcon == true){
       return;
     }
     this.showEmojis = clickedOnSmileyIcon || emojiDrawer;
-  }
-
-  onInput(){
-    // console.log(this.inputString); 
+    this.isToggle = menuIcon || clickedInsideDropdown;
   }
   
   toggleEmojiDrawer(){
@@ -115,7 +117,6 @@ export class DefaultComponent implements OnInit {
   }
 
   getEmoji(event:any){
-    console.log(event.detail.unicode);
     this.inputString += event.detail.unicode;
   }
 
@@ -125,12 +126,8 @@ export class DefaultComponent implements OnInit {
   
   handleModalSubmit(inputText: any) {
     this.webSocketService.connect();
-
     let id = this.generateId();
     let obj = { name:'', id:0}
-
-    console.log('name of user:', this.modalInput);
-
     obj.id = this.generateId();
     obj.name = this.modalInput;
     this.id = obj.id;
@@ -142,13 +139,12 @@ export class DefaultComponent implements OnInit {
     if (status) {
       // Connection is open, send the message
       this.webSocketService.sendMessage(obj);
-
       // Generate a random delay between 1000 and 1500 ms
       const randomDelay = Math.floor(Math.random() * (1500 - 1000 + 1)) + 1000;
       setTimeout(() => {
         this.modalViewToggle.set(false);
-        this.modalInput = ''; // Clear the input text after sending the message
-        subscription.unsubscribe(); // Unsubscribe to avoid memory leaks
+        this.modalInput = '';
+        subscription.unsubscribe();
       }, randomDelay);
       this.receiveMessages();
     } else {
@@ -162,7 +158,6 @@ export class DefaultComponent implements OnInit {
   }
 
   receiveMessages(){
-    // Example: Receiving messages
     this.webSocketService.getMessage().subscribe((event: MessageEvent) => {
       // Convert the blob to an array buffer
       const arrayBufferPromise = event.data.arrayBuffer();
@@ -170,42 +165,36 @@ export class DefaultComponent implements OnInit {
         // Convert the array buffer to text
         const text = new TextDecoder('utf-8').decode(arrayBuffer);
 
-        //alert when new person joins
         if(Object.keys(JSON.parse(text)).length == 2){
-          alert(`${JSON.parse(text).name} joined the chat`);
+          const name = JSON.parse(text).name 
+          const joined = name + ' ' + 'joined the chat';
+          this.incomingMessages.push({type:'joinedLeft',text:joined})
+        }//alert when someone leaves the chat
+        else if(Object.keys(JSON.parse(text)).length == 1){
+          const left = JSON.parse(text).message;
+          this.incomingMessages.push({type:'joinedLeft',text:left})
         }else{
           this.incomingMessages.push(JSON.parse(text));
           let notifMessage = JSON.parse(text);
           this.handleNewMessage(notifMessage);
-          this.scrollBottom();
           sessionStorage.setItem('incomingMessages', JSON.stringify(this.incomingMessages));
         }
-        // Handle the received message as needed
+        this.scrollBottom();
       });
     });
   }
-
-  // checkChatConnectedStatus(){
-  //   this.webSocketService.isChatConnected.subscribe((status)=>{
-  //     return status;
-  //   })
-  // }
 
   setFlagProcessing(){
     this.webSocketService.isJoining.next(true);
     console.log(this.webSocketService.isJoining.value,'flag');
   }
 
-  // sendMessage(message) {
-  //   this.ws.send(message);
-  // }
-
   onSubmit(){
-    if(this.inputString !== ''){
+    if(this.inputString.trim() !== ''){
       let obj = {name:'',id:0,message:'',time:''};
       obj.name =  this.username;
       obj.id = this.id;
-      obj.message = this.inputString;
+      obj.message = this.inputString.trim();
       obj.time = this.getCurrTime();
       //explicit id zero to identify outgoing messages
       this.incomingMessages.push({...obj,id:0}); 
@@ -213,6 +202,9 @@ export class DefaultComponent implements OnInit {
       this.inputString = '';
       this.scrollBottom();
       sessionStorage.setItem('incomingMessages', JSON.stringify(this.incomingMessages));
+    }else {
+      // Reset cursor to start if input is empty or contains only whitespace
+      this.inputString = '';
     }
   }
 
@@ -222,13 +214,24 @@ export class DefaultComponent implements OnInit {
     audio.load();
     audio.play();
   }
+  
+  togglePlaySound() {
+    this.playSound = !this.playSound;
+    sessionStorage.setItem('notificationSound', JSON.stringify(this.playSound));
+  }
+
+  toggleHeaderMenu(){
+    this.isToggle = !this.isToggle;
+  }
 
   async handleNewMessage(message: any): Promise<void> {
     if (this.document.visibilityState === 'visible') {
       // Don't show notification when the tab is visible
       return;
     }
-    this.playNotificationSound();
+    if(this.playSound){
+      this.playNotificationSound();
+    }
     // Show a notification
     let name = this.titlecasePipe.transform(message.name);
     const notification = this.notificationService.showNotification(name, {

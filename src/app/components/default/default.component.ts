@@ -24,7 +24,7 @@ export class DefaultComponent implements OnInit {
 
   public title:string = 'Chatify';
   public inputPlaceholder:string = 'type your message here...'
-  public chatRoom:string = '/assets/chat-room.png';
+  public chatRoom:string = '/assets/chat.png';
   public menu :string = '/assets/menu.png';
   public send:string = 'assets/send.png';
   public smiley:string = 'assets/smiley.png';

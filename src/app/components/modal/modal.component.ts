@@ -38,7 +38,7 @@ export class ModalComponent {
   }
 
   checkMinLen(){
-    if(this.inputText.length <= 3){
+    if(this.inputText.trim().length <= 3){
       this.isMinLen = false;
     }else{
       this.isMinLen = true;

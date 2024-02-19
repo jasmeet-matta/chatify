@@ -31,9 +31,7 @@
                     </div>
                 } @else {
                     <div class="shadow-md bg-white p-3 rounded-2xl self-start inline-block max-w-[75%]" [ngClass]="(message.id == 0) ? ['self-end', 'rounded-br-none'] : ['self-start', 'rounded-bl-none']" [style.background-color]="message.id == 0 ? '#e76f51' : 'white'">
-                        <span class="whitespace-normal break-words">
-                            {{message.message}}
-                        </span>
+                        <span class="whitespace-normal break-words" [appValidUrl]="message.message"></span>
                     </div>
                     <div class="flex justify-start mt-0.5 mb-3" [ngClass]="message.id ==0 ? 'justify-end' : 'justify-start'">
                         <span class="text-xs text-gray-400">{{ message.name | titlecase }} | {{message.time}}</span>

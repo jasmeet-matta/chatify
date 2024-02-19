@@ -5,11 +5,12 @@ import { ModalComponent } from '../modal/modal.component';
 import { BackdropComponent } from '../backdrop/backdrop.component';
 import { WebSocketService } from '../../services/web-socket.service';
 import { NotificationService } from '../../services/notification.service';
+import { ValidUrlDirective } from '../../directives/valid-url.directive';
 
 @Component({
   selector: 'app-default',
   standalone: true,
-  imports: [FormsModule,ReactiveFormsModule,CommonModule,ModalComponent,BackdropComponent,NgClass],
+  imports: [FormsModule,ReactiveFormsModule,CommonModule,ModalComponent,BackdropComponent,NgClass, ValidUrlDirective],
   templateUrl: './default.component.html',
   styleUrl: './default.component.scss',
   schemas: [
@@ -58,7 +59,6 @@ export class DefaultComponent implements OnInit {
     let name, id;
     name = sessionStorage.getItem('name');
     id = sessionStorage.getItem('id');
-    console.log((JSON.parse(name)),JSON.parse(id)); 
     if(name && id){
       this.modalViewToggle.set(false);
       this.webSocketService.connect();
@@ -83,19 +83,6 @@ export class DefaultComponent implements OnInit {
     if(sound){
       this.playSound = JSON.parse(sound);
     }
-  }
-
-
-  ngAfterViewInit(){
-    // this.ws = new WebSocket('wss://wooden-strengthened-origami.glitch.me/');
-
-    // this.ws.onopen = () => {
-    //   console.log('Connected to the server');
-    // };
-
-    // this.ws.onclose = () => {
-    //   console.log('Disconnected from server'); 
-    // };
   }
 
   @HostListener('document:click', ['$event'])
@@ -186,7 +173,6 @@ export class DefaultComponent implements OnInit {
 
   setFlagProcessing(){
     this.webSocketService.isJoining.next(true);
-    console.log(this.webSocketService.isJoining.value,'flag');
   }
 
   onSubmit(){

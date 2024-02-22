@@ -1,28 +1,52 @@
-# Chatify
-Engage in real-time group conversations effortlessly with the chatify web app
+# Chatify 💬
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.9.
+## Overview 🔍
 
-## Development server
+Welcome to Chatify, a real-time group chat application built with Angular. Chatify provides a seamless platform for users to engage in real-time conversations with multiple participants. With features like emoji support, desktop notifications, and alerts for user join and exit events, Chatify enhances the overall chat experience.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+### Key Features ⭐
 
-## Code scaffolding
+- **Real-Time Messaging:** Enjoy instant communication with other participants, making conversations fluid and dynamic.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- **Group Chat:** Chatify is designed for group conversations, allowing multiple users to join and participate simultaneously.
 
-## Build
+- **Emoji Support:** Express yourself with a wide range of emojis to add a touch of fun and emotion to your messages.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+- **Desktop Notifications:** Stay informed even when the app is minimized with desktop notifications for incoming messages.
 
-## Running unit tests
+- **Join/Exit Alerts:** Receive alerts when someone joins or leaves the chat, keeping you updated on the participants.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- **Notification Sounds:** Customize your experience by choosing to enable or disable notification sounds.
 
-## Running end-to-end tests
+## Installation 📕
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/jasmeet-matta/chatify.git
 
-## Further help
+2. **Navigate to the Project Directory:**
+   ```bash
+   cd chatify
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+3. **Install Dependencies:**
+   ```bash
+   npm i
+
+4. **Run the Application:**
+   ```bash
+   ng serve
+
+## Open in Browser 💻
+Open your web browser and navigate to [http://localhost:4200/](http://localhost:4200/) to access Chatify.
+
+## Contributing 🤝🏻
+Contributions are welcome! Follow these steps to contribute to Chatify:
+1. Fork the repository.
+2. Create a new branch: `git checkout -b feature/new-feature`.
+3. Make your changes and commit them: `git commit -m 'Add new feature'`.
+4. Push to the branch: `git push origin feature/new-feature`.
+5. Submit a pull request.
+
+## License 🗎
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+   

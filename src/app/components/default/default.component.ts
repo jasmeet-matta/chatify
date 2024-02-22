@@ -47,12 +47,13 @@ export class DefaultComponent implements OnInit {
   ){ }
 
   ngOnInit() {
+    if(Notification){
       Notification.requestPermission().then((permission) => {
         if (permission !== 'granted') {
           console.error('Notification permission denied');
         }
       });
-
+    }
     this.loadPrevMessages();
     // Example: Sending a message
     // this.webSocketService.sendMessage('Hello WebSocket!');

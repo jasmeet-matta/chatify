@@ -1,6 +1,6 @@
-import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA, HostListener, signal, ViewChild, ElementRef, Inject} from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA, HostListener, signal, ViewChild, ElementRef, Inject, PLATFORM_ID} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule, DOCUMENT, NgClass, TitleCasePipe } from '@angular/common';
+import { CommonModule, DOCUMENT, NgClass, TitleCasePipe, isPlatformBrowser } from '@angular/common';
 import { ModalComponent } from '../modal/modal.component';
 import { BackdropComponent } from '../backdrop/backdrop.component';
 import { WebSocketService } from '../../services/web-socket.service';
@@ -43,22 +43,22 @@ export class DefaultComponent implements OnInit {
     private webSocketService:WebSocketService,
     private notificationService:NotificationService,
     private titlecasePipe:TitleCasePipe,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    @Inject(PLATFORM_ID) private platformId: Object
   ){ }
 
   ngOnInit() {
-      Notification.requestPermission().then((permission) => {
-        if (permission !== 'granted') {
-          console.error('Notification permission denied');
-        }
-      });
-
     this.loadPrevMessages();
-    // Example: Sending a message
-    // this.webSocketService.sendMessage('Hello WebSocket!');
+    this.getNotificationPermission();
+    this.chatInit();
+  }
+
+  chatInit(){
     let name, id;
-    name = sessionStorage.getItem('name');
-    id = sessionStorage.getItem('id');
+    if (isPlatformBrowser(this.platformId)) {
+      name = sessionStorage.getItem('name');
+      id = sessionStorage.getItem('id');
+    }
     if(name && id){
       this.modalViewToggle.set(false);
       this.webSocketService.connect();
@@ -71,10 +71,23 @@ export class DefaultComponent implements OnInit {
     }
   }
 
+  getNotificationPermission(){
+    if (isPlatformBrowser(this.platformId)) {
+      Notification.requestPermission().then((permission) => {
+        if (permission !== 'granted') {
+          console.error('Notification permission denied');
+        }
+      });
+    }
+  }
+
   loadPrevMessages(){
-    const storedMessages = sessionStorage.getItem('incomingMessages');
-    if (storedMessages) {
-      this.incomingMessages = JSON.parse(storedMessages);
+    if (isPlatformBrowser(this.platformId)) {
+      const sessionStorage = document.defaultView?.sessionStorage;
+      if (sessionStorage) {
+        const storedMessages = sessionStorage.getItem('incomingMessages');  
+        this.incomingMessages = JSON.parse(storedMessages);
+      }
     }
   }
 
@@ -245,5 +258,4 @@ export class DefaultComponent implements OnInit {
     currTime  = String(time.getHours()).padStart(2, '0') + ':' + String(time.getMinutes()).padStart(2, '0');
     return currTime;
   }
-
 }

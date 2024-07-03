@@ -54,8 +54,6 @@ export class DefaultComponent implements OnInit {
       });
 
     this.loadPrevMessages();
-    // Example: Sending a message
-    // this.webSocketService.sendMessage('Hello WebSocket!');
     let name, id;
     name = sessionStorage.getItem('name');
     id = sessionStorage.getItem('id');
@@ -245,5 +243,4 @@ export class DefaultComponent implements OnInit {
     currTime  = String(time.getHours()).padStart(2, '0') + ':' + String(time.getMinutes()).padStart(2, '0');
     return currTime;
   }
-
 }

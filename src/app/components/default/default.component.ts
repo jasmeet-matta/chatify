@@ -175,7 +175,7 @@ export class DefaultComponent implements OnInit {
 
   onSubmit(){
     if(this.inputString.trim() !== ''){
-      let obj = {name:'',id:0,message:'',time:''};
+      let obj = { name:'',id:0,message:'',time:'' };
       obj.name =  this.username;
       obj.id = this.id;
       obj.message = this.inputString.trim();

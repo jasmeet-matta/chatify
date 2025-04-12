@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Renderer2, Input } from '@angular/core';
+import {Directive, ElementRef, Renderer2, Input} from '@angular/core';
 
 @Directive({
   selector: '[appValidUrl]',
@@ -6,11 +6,12 @@ import { Directive, ElementRef, Renderer2, Input } from '@angular/core';
 })
 export class ValidUrlDirective {
 
-  constructor(private el: ElementRef, private renderer: Renderer2) { }
+  constructor(private el: ElementRef, private renderer: Renderer2) {
+  }
 
   @Input() set appValidUrl(text: string) {
     const words = text.split(/\s+/);
-    
+
     words.forEach((word) => {
       if (this.isValidURL(word)) {
         const anchor = this.renderer.createElement('a');
@@ -36,5 +37,4 @@ export class ValidUrlDirective {
       return false;
     }
   }
-
 }

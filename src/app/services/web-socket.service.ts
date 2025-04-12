@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {Observable, Subject, BehaviorSubject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,12 +11,11 @@ export class WebSocketService {
   private reconnectInterval = 1000; // Adjust as needed
   private maxReconnectAttempts = 10; // Adjust as needed
   private currentReconnectAttempts = 0;
-  public isChatConnected = new BehaviorSubject<boolean>(false);
-  public isJoining = new BehaviorSubject<boolean>(false);
+  isChatConnected = new BehaviorSubject<boolean>(false);
+  isJoining = new BehaviorSubject<boolean>(false);
 
   constructor() {
     this.messageSubject = new Subject<MessageEvent>();
-    // this.connect();
   }
 
   connect() {

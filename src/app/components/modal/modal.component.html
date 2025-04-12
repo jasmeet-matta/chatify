@@ -5,7 +5,7 @@
       <div class="text-center">
         <h1 class="block text-2xl font-bold text-gray-600">Welcome to Chatify</h1>
         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          Enter your name to join the room! 
+          Enter your name to join the room!
         </p>
       </div>
 
@@ -17,15 +17,14 @@
               </div>
             </div>
               <button (click)="onSubmit($event)" [disabled]="!isMinLen" type="submit" class="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-green-500 text-white hover:bg-green-600 focus:outline-none focus:ring-1 focus:ring-green-500 focus:ring-offset-2 transition-all text-sm disabled:opacity-50 disabled:hover:cursor-not-allowed disabled:hover:bg-green-500">
-                <!-- <h4>{{isJoining}}</h4>   -->
                @if (isJoining) {
-                  <div class="flex items-center justify-center"> 
+                  <div class="flex items-center justify-center">
                     <div class="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-white border-4"></div>
                     <div class="ml-2"> Processing...</div>
                 </div>
                 }@else {
                   <div>Join Chat</div>
-                } 
+                }
               </button>
           </div>
       </div>

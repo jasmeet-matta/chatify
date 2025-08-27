@@ -22,7 +22,7 @@ export class ModalComponent {
   constructor(private webSocketService: WebSocketService) {
   }
 
-  onSubmit(event) {
+  onSubmit(event: any) {
     if (this.isMinLen) {
       this.submitEvent.emit(event);
       this.isJoining = this.checkProcessingStatus();

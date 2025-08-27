@@ -19,7 +19,7 @@ export class WebSocketService {
   }
 
   connect() {
-    this.socket = new WebSocket('wss://wooden-strengthened-origami.glitch.me/');
+    this.socket = new WebSocket('wss://chatify-ws.onrender.com');
 
     this.socket.addEventListener('open', (event) => {
       console.log('WebSocket connection opened');

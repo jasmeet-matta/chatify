@@ -128,17 +128,10 @@ export class DefaultComponent implements OnInit {
     this.inputString += event.detail.unicode;
   }
 
-  generateId() {
-    return Math.floor(Math.random() * 99999);
-  }
-
   handleModalSubmit() {
     this.webSocketService.connect();
-    let id = this.generateId();
-    let obj = {name: '', id: 0}
-    obj.id = this.generateId();
+    let obj = {name: '', type: 'join'};
     obj.name = this.modalInput;
-    this.id = obj.id;
     this.username = obj.name;
     this.setFlagProcessing();
 
@@ -162,33 +155,21 @@ export class DefaultComponent implements OnInit {
     });
 
     sessionStorage.setItem('name', JSON.stringify(this.modalInput));
-    sessionStorage.setItem('id', JSON.stringify(id));
+    // sessionStorage.setItem('id', JSON.stringify(id));
   }
 
   receiveMessages() {
     this.webSocketService.getMessage().subscribe((event: MessageEvent) => {
-      // Convert the blob to an array buffer
-      const arrayBufferPromise = event.data.arrayBuffer();
-      arrayBufferPromise.then((arrayBuffer: any) => {
-        // Convert the array buffer to text
-        const text = new TextDecoder('utf-8').decode(arrayBuffer);
-
-        if (Object.keys(JSON.parse(text)).length == 2) {
-          const name = JSON.parse(text).name
-          const joined = name + ' ' + 'joined the chat';
-          this.incomingMessages.push({type: 'joinedLeft', text: joined})
-        }//alert when someone leaves the chat
-        else if (Object.keys(JSON.parse(text)).length == 1) {
-          const left = JSON.parse(text).message;
-          this.incomingMessages.push({type: 'joinedLeft', text: left})
-        } else {
-          this.incomingMessages.push(JSON.parse(text));
-          let message = JSON.parse(text);
-          this.handleNewMessage(message).then(r => r);
-          sessionStorage.setItem('incomingMessages', JSON.stringify(this.incomingMessages));
-        }
-        this.scrollBottom();
-      });
+      const messageObject = JSON.parse(event?.data);
+      // alert when someone joins or leaves the chat
+      if (messageObject.type === 'status') {
+        this.incomingMessages.push(messageObject)
+      } else {
+        this.incomingMessages.push(messageObject);
+        this.handleNewMessage(messageObject).then(r => r);
+        sessionStorage.setItem('incomingMessages', JSON.stringify(this.incomingMessages));
+      }
+      this.scrollBottom();
     });
   }
 
@@ -198,7 +179,7 @@ export class DefaultComponent implements OnInit {
 
   onSubmit() {
     if (this.inputString.trim() !== '') {
-      let obj = {name: '', id: 0, message: '', time: ''};
+      let obj = {name: '', id: 0, message: '', time: '', type: 'message'};
       obj.name = this.username;
       obj.id = this.id;
       obj.message = this.inputString.trim();
@@ -210,7 +191,7 @@ export class DefaultComponent implements OnInit {
       this.scrollBottom();
       sessionStorage.setItem('incomingMessages', JSON.stringify(this.incomingMessages));
     } else {
-      // Reset cursor to start if input is empty or contains only whitespace
+      // Reset the cursor to start if the input is empty or contains only whitespace
       this.inputString = '';
     }
   }

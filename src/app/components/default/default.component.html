@@ -23,10 +23,10 @@
     }
         <div class="flex flex-col p-2 h-10">
             @for (message of incomingMessages; track message.id) {
-                @if(message.type == 'joinedLeft'){
+                @if(message.type == 'status'){
                     <div class="flex justify-center notif mt-2 mb-2">
                         <span class="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">{{
-                            message.text}}</span>
+                            message.message}}</span>
                     </div>
                 } @else {
                     <div class="shadow-md bg-white p-3 rounded-2xl self-start inline-block max-w-[75%]" [ngClass]="(message.id == 0) ? ['self-end', 'rounded-br-none'] : ['self-start', 'rounded-bl-none']" [style.background-color]="message.id == 0 ? '#e76f51' : 'white'">
